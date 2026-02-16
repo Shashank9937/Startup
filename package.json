@@ -4,11 +4,15 @@
   "private": true,
   "description": "Ultimate Founder Operating System",
   "main": "server.js",
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "start": "npm run build && node server.js"
+    "start": "node server.js",
+    "render-build": "npm install --include=dev && npm run build"
   },
   "dependencies": {
     "date-fns": "^4.1.0",
