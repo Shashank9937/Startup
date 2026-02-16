@@ -1,0 +1,4 @@
+node_modules/
+data/founder-os-state.json
+.DS_Store
+.env
