@@ -8,12 +8,14 @@ const PORT = process.env.PORT || 3000;
 const DATABASE_URL = process.env.DATABASE_URL;
 const DATA_DIR = path.join(__dirname, 'data');
 const STATE_PATH = path.join(DATA_DIR, 'founder-os-state.json');
+const DIST_DIR = path.join(__dirname, 'dist');
+const CLIENT_DIR = fs.existsSync(DIST_DIR) ? DIST_DIR : __dirname;
 
 const usePostgres = Boolean(DATABASE_URL);
 const pool = usePostgres ? new Pool({ connectionString: DATABASE_URL }) : null;
 
 app.use(express.json({ limit: '5mb' }));
-app.use(express.static(__dirname));
+app.use(express.static(CLIENT_DIR));
 
 function ensureStateFile() {
   if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
@@ -124,8 +126,11 @@ app.put('/api/founder-os', async (req, res) => {
   }
 });
 
-app.get('*', (_req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
+app.get('*', (req, res) => {
+  if (req.path.startsWith('/api') || req.path === '/healthz') {
+    return res.status(404).json({ error: 'Not found' });
+  }
+  return res.sendFile(path.join(CLIENT_DIR, 'index.html'));
 });
 
 initStorage()
