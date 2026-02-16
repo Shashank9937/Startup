@@ -1,0 +1,14 @@
+{
+  "name": "founder-os",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Founder Operating System web app",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}

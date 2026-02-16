@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en" class="h-full">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Founder Operating System</title>
+  <meta name="description" content="Founder Operating System: a complete 12-month journey dashboard from zero to Series A." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap"
+    rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            heading: ['Space Grotesk', 'sans-serif'],
+            body: ['IBM Plex Sans', 'sans-serif']
+          },
+          colors: {
+            brand: {
+              50: '#ecfdf7',
+              100: '#d0f7e8',
+              500: '#0ea5a3',
+              600: '#0b8f8d',
+              700: '#0f766e',
+              900: '#134e4a'
+            },
+            accent: {
+              500: '#f59e0b',
+              600: '#d97706'
+            },
+            danger: {
+              500: '#ef4444',
+              600: '#dc2626'
+            }
+          },
+          boxShadow: {
+            soft: '0 12px 30px rgba(15, 23, 42, 0.08)',
+            focus: '0 0 0 3px rgba(14, 165, 163, 0.25)'
+          },
+          keyframes: {
+            slideFade: {
+              '0%': { opacity: '0', transform: 'translateY(8px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' }
+            }
+          },
+          animation: {
+            slideFade: 'slideFade 0.32s ease-out'
+          }
+        }
+      }
+    };
+  </script>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+
+<body class="h-full font-body bg-slate-100 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
+  <div id="root"></div>
+  <div id="modal-root"></div>
+
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script type="text/babel" src="/app.js"></script>
+</body>
+
+</html>
