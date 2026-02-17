@@ -5,6 +5,7 @@ export default defineConfig({
   plugins: [react()],
   build: {
     outDir: 'dist',
+    emptyOutDir: false,
     sourcemap: false,
     target: 'es2020',
     chunkSizeWarningLimit: 1200

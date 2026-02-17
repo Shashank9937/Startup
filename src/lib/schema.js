@@ -534,7 +534,19 @@ export function createDefaultState() {
     reports: {
       weekly: [],
       monthly: [],
-      investorUpdates: []
+      investorUpdates: [],
+      launchChecklist: [
+        { id: uid('check'), label: 'All core features functional', done: false },
+        { id: uid('check'), label: 'Mobile responsive', done: false },
+        { id: uid('check'), label: 'Data persistence working', done: false },
+        { id: uid('check'), label: 'Export/import working', done: false },
+        { id: uid('check'), label: 'No console errors', done: false },
+        { id: uid('check'), label: 'Fast performance', done: false },
+        { id: uid('check'), label: 'Beautiful UI', done: false },
+        { id: uid('check'), label: 'Helpful onboarding', done: false },
+        { id: uid('check'), label: 'Documentation/help section', done: false },
+        { id: uid('check'), label: 'Demo mode with sample data', done: false }
+      ]
     },
     ui: {
       toast: null,

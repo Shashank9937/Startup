@@ -17,6 +17,7 @@ const DecisionPage = lazy(() => import('./pages/DecisionPage'));
 const AIAgentsPage = lazy(() => import('./pages/AIAgentsPage'));
 const NetworkPage = lazy(() => import('./pages/NetworkPage'));
 const FundraisingPage = lazy(() => import('./pages/FundraisingPage'));
+const ReportsPage = lazy(() => import('./pages/ReportsPage'));
 const SettingsPage = lazy(() => import('./pages/SettingsPage'));
 
 function RouteWrapper({ children }) {
@@ -56,6 +57,7 @@ function AppRoutes({ onToast }) {
           <Route path="/ai" element={<RouteWrapper><AIAgentsPage /></RouteWrapper>} />
           <Route path="/network" element={<RouteWrapper><NetworkPage /></RouteWrapper>} />
           <Route path="/fundraising" element={<RouteWrapper><FundraisingPage /></RouteWrapper>} />
+          <Route path="/reports" element={<RouteWrapper><ReportsPage /></RouteWrapper>} />
           <Route path="/settings" element={<RouteWrapper><SettingsPage onToast={onToast} /></RouteWrapper>} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
@@ -101,7 +103,8 @@ export default function App() {
     'mod+7': () => navigate('/ai'),
     'mod+8': () => navigate('/network'),
     'mod+9': () => navigate('/fundraising'),
-    'mod+0': () => navigate('/settings')
+    'mod+0': () => navigate('/settings'),
+    'mod+r': () => navigate('/reports')
   });
 
   return (

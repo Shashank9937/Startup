@@ -1,4 +1,5 @@
 node_modules/
+dist/
 data/founder-os-state.json
 .DS_Store
 .env

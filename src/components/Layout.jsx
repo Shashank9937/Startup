@@ -5,6 +5,7 @@ import {
   BookOpen,
   Bot,
   ChartColumn,
+  FileText,
   Gauge,
   Home,
   Network,
@@ -31,6 +32,7 @@ const NAV_ITEMS = [
   { path: '/ai', label: 'AI Agents & Workflows', icon: Bot },
   { path: '/network', label: 'Network & Contacts', icon: Network },
   { path: '/fundraising', label: 'Fundraising Tracker', icon: TrendingUp },
+  { path: '/reports', label: 'Reports & One-Pagers', icon: FileText },
   { path: '/settings', label: 'Settings & Export', icon: Settings }
 ];
 
