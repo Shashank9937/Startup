@@ -4,8 +4,22 @@ import { Card, EmptyState, Metric } from '../components/ui';
 import { useAppStore } from '../context/AppContext';
 import { dateISO } from '../lib/utils';
 
+function toLines(value) {
+  return Array.isArray(value) ? value.join('\n') : '';
+}
+
+function fromLines(value) {
+  return value
+    .split('\n')
+    .map((line) => line.trim())
+    .filter(Boolean);
+}
+
 function runAgent(agent, input) {
-  return `${agent.name}\n\nInput: ${input || 'No input provided.'}\n\nGenerated Output:\n${agent.outputTemplate}\n\nRecommended next actions:\n1) Validate assumptions with real customer signal\n2) Define KPI and success threshold\n3) Assign owner and deadline`;
+  const capabilities = (agent.capabilities || []).map((item) => `- ${item}`).join('\n');
+  const deliverables = (agent.deliverables || []).map((item) => `- ${item}`).join('\n');
+
+  return `${agent.name}\n\nInput: ${input || 'No input provided.'}\n\nCore capabilities:\n${capabilities || '- No capabilities listed'}\n\nGenerated Output:\n${agent.outputTemplate}\n\nExpected deliverables:\n${deliverables || '- No deliverables listed'}\n\nRecommended next actions:\n1) Validate assumptions with real customer signal\n2) Define KPI and success threshold\n3) Assign owner and deadline`;
 }
 
 async function copy(text) {
@@ -22,18 +36,24 @@ export default function AIAgentsPage() {
   const [agentInput, setAgentInput] = useState('');
   const [promptSearch, setPromptSearch] = useState('');
   const [category, setCategory] = useState('all');
+  const [editingAgent, setEditingAgent] = useState(false);
 
   const selectedAgent = state.ai.agents.find((agent) => agent.id === selectedAgentId) || state.ai.agents[0];
 
+  const allPrompts = useMemo(
+    () => [...state.ai.customPrompts, ...state.ai.prompts],
+    [state.ai.customPrompts, state.ai.prompts]
+  );
+
   const prompts = useMemo(() => {
-    return state.ai.prompts.filter((prompt) => {
+    return allPrompts.filter((prompt) => {
       const matchesSearch = `${prompt.title} ${prompt.useCase}`.toLowerCase().includes(promptSearch.toLowerCase());
       const matchesCategory = category === 'all' || prompt.category === category;
       return matchesSearch && matchesCategory;
     });
-  }, [state.ai.prompts, promptSearch, category]);
+  }, [allPrompts, promptSearch, category]);
 
-  const categories = useMemo(() => ['all', ...new Set(state.ai.prompts.map((p) => p.category))], [state.ai.prompts]);
+  const categories = useMemo(() => ['all', ...new Set(allPrompts.map((p) => p.category))], [allPrompts]);
 
   const totalSaved = state.ai.hoursSavedLogs.reduce((sum, row) => sum + (Number(row.withoutAi) - Number(row.withAi)), 0);
   const avgQuality = state.ai.hoursSavedLogs.length
@@ -49,19 +69,115 @@ export default function AIAgentsPage() {
             <button
               key={agent.id}
               className={`rounded-xl border p-3 text-left ${selectedAgentId === agent.id ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20' : 'border-slate-200 dark:border-slate-700'}`}
-              onClick={() => setSelectedAgentId(agent.id)}
+              onClick={() => {
+                setSelectedAgentId(agent.id);
+                setEditingAgent(false);
+              }}
             >
               <p className="font-medium">{agent.icon} {agent.name}</p>
               <p className="text-xs text-slate-500 mt-1">{agent.description}</p>
+              <p className="text-xs text-slate-500 mt-2">
+                {agent.requiredInputs?.length || 0} inputs • {agent.capabilities?.length || 0} capabilities • {agent.deliverables?.length || 0} deliverables
+              </p>
             </button>
           ))}
         </div>
+
+        {selectedAgent ? (
+          <div className="mt-3 rounded-xl border border-slate-200 dark:border-slate-700 p-3 space-y-3">
+            <div className="flex items-center justify-between gap-2">
+              <h4 className="font-semibold text-sm">Necessary Agent Details: {selectedAgent.name}</h4>
+              <button className="btn-secondary" onClick={() => setEditingAgent((prev) => !prev)}>
+                {editingAgent ? 'Done Editing' : 'Edit Agent'}
+              </button>
+            </div>
+
+            {editingAgent ? (
+              <div className="space-y-2">
+                <label className="text-xs">Description
+                  <textarea
+                    className="textarea mt-1"
+                    value={selectedAgent.description || ''}
+                    onChange={(e) => mutate((draft) => {
+                      const target = draft.ai.agents.find((item) => item.id === selectedAgent.id);
+                      if (target) target.description = e.target.value;
+                    })}
+                  />
+                </label>
+                <div className="grid gap-2 md:grid-cols-3">
+                  <label className="text-xs">Required Inputs
+                    <textarea
+                      className="textarea mt-1 min-h-32"
+                      value={toLines(selectedAgent.requiredInputs)}
+                      onChange={(e) => mutate((draft) => {
+                        const target = draft.ai.agents.find((item) => item.id === selectedAgent.id);
+                        if (target) target.requiredInputs = fromLines(e.target.value);
+                      })}
+                    />
+                  </label>
+                  <label className="text-xs">Capabilities
+                    <textarea
+                      className="textarea mt-1 min-h-32"
+                      value={toLines(selectedAgent.capabilities)}
+                      onChange={(e) => mutate((draft) => {
+                        const target = draft.ai.agents.find((item) => item.id === selectedAgent.id);
+                        if (target) target.capabilities = fromLines(e.target.value);
+                      })}
+                    />
+                  </label>
+                  <label className="text-xs">Deliverables
+                    <textarea
+                      className="textarea mt-1 min-h-32"
+                      value={toLines(selectedAgent.deliverables)}
+                      onChange={(e) => mutate((draft) => {
+                        const target = draft.ai.agents.find((item) => item.id === selectedAgent.id);
+                        if (target) target.deliverables = fromLines(e.target.value);
+                      })}
+                    />
+                  </label>
+                </div>
+                <label className="text-xs">Output Template
+                  <textarea
+                    className="textarea mt-1"
+                    value={selectedAgent.outputTemplate || ''}
+                    onChange={(e) => mutate((draft) => {
+                      const target = draft.ai.agents.find((item) => item.id === selectedAgent.id);
+                      if (target) target.outputTemplate = e.target.value;
+                    })}
+                  />
+                </label>
+              </div>
+            ) : (
+              <div className="grid gap-3 md:grid-cols-3">
+                <section className="rounded-lg border border-slate-200 dark:border-slate-700 p-2">
+                  <p className="text-xs uppercase tracking-wide text-slate-500">Required inputs</p>
+                  <ul className="mt-1 text-sm list-disc ml-4 space-y-1">
+                    {(selectedAgent.requiredInputs || []).map((item) => <li key={`${selectedAgent.id}_in_${item}`}>{item}</li>)}
+                  </ul>
+                </section>
+                <section className="rounded-lg border border-slate-200 dark:border-slate-700 p-2">
+                  <p className="text-xs uppercase tracking-wide text-slate-500">Capabilities</p>
+                  <ul className="mt-1 text-sm list-disc ml-4 space-y-1">
+                    {(selectedAgent.capabilities || []).map((item) => <li key={`${selectedAgent.id}_cap_${item}`}>{item}</li>)}
+                  </ul>
+                </section>
+                <section className="rounded-lg border border-slate-200 dark:border-slate-700 p-2">
+                  <p className="text-xs uppercase tracking-wide text-slate-500">Deliverables</p>
+                  <ul className="mt-1 text-sm list-disc ml-4 space-y-1">
+                    {(selectedAgent.deliverables || []).map((item) => <li key={`${selectedAgent.id}_del_${item}`}>{item}</li>)}
+                  </ul>
+                </section>
+              </div>
+            )}
+          </div>
+        ) : null}
 
         <div className="mt-3 rounded-xl border border-slate-200 dark:border-slate-700 p-3">
           <label className="label">Agent Input</label>
           <textarea className="textarea min-h-24" value={agentInput} onChange={(e) => setAgentInput(e.target.value)} placeholder="Paste transcript, objective, or context" />
           <div className="mt-2 flex gap-2">
-            <button className="btn-primary" onClick={() => mutate((draft) => {
+            <button className="btn-primary disabled:opacity-50" disabled={!selectedAgent} onClick={() => mutate((draft) => {
+              if (!selectedAgent) return;
               const output = runAgent(selectedAgent, agentInput);
               draft.ai.agentRuns.unshift({
                 id: `agent_run_${Date.now()}`,
@@ -113,6 +229,8 @@ export default function AIAgentsPage() {
               <textarea className="textarea mt-2" value={prompt.template} onChange={(e) => mutate((draft) => {
                 const target = draft.ai.prompts.find((x) => x.id === prompt.id);
                 if (target) target.template = e.target.value;
+                const customTarget = draft.ai.customPrompts.find((x) => x.id === prompt.id);
+                if (customTarget) customTarget.template = e.target.value;
               })} />
               <div className="mt-1 flex justify-end">
                 <button className="btn-secondary" onClick={() => copy(prompt.template)}><Copy size={14} className="inline mr-1" />Copy</button>

@@ -27,6 +27,10 @@ export default function LearningPage() {
   const booksRead = state.learning.books.filter((book) => book.status === 'Complete').length;
   const booksProgress = Math.min(100, Math.round((booksRead / Math.max(1, state.learning.booksGoal)) * 100));
   const learningHoursTotal = state.learning.learningHoursLogs.reduce((sum, item) => sum + Number(item.hours || 0), 0);
+  const coreModels = state.knowledge.mentalModels
+    .filter((model) => model.tier === 'Tier 1: Fundamental')
+    .slice(0, 10);
+  const ceoLearning = state.learning.ceoLearning || {};
 
   return (
     <div className="space-y-4">
@@ -42,6 +46,173 @@ export default function LearningPage() {
         <div className="mt-3">
           <div className="flex justify-between text-sm mb-1"><span>Books progress</span><span>{booksProgress}%</span></div>
           <Progress value={booksProgress} />
+        </div>
+      </Card>
+
+      <Card title="CEO Learning Operating System" subtitle="Strategic learning system for founder/CEO growth">
+        <div className="grid gap-3 lg:grid-cols-2">
+          <section className="rounded-xl border border-slate-200 dark:border-slate-700 p-3 space-y-2">
+            <h4 className="font-semibold text-sm">Weekly CEO Learning Scoreboard</h4>
+            <div className="grid grid-cols-2 gap-2">
+              <label className="text-xs">Strategic thinking hours
+                <input
+                  className="input mt-1"
+                  type="number"
+                  value={ceoLearning.strategicThinkingHours || 0}
+                  onChange={(e) => mutate((draft) => { draft.learning.ceoLearning.strategicThinkingHours = Number(e.target.value); })}
+                />
+              </label>
+              <label className="text-xs">Operator conversations
+                <input
+                  className="input mt-1"
+                  type="number"
+                  value={ceoLearning.operatorConversations || 0}
+                  onChange={(e) => mutate((draft) => { draft.learning.ceoLearning.operatorConversations = Number(e.target.value); })}
+                />
+              </label>
+              <label className="text-xs">Board comms hours
+                <input
+                  className="input mt-1"
+                  type="number"
+                  value={ceoLearning.boardCommunicationHours || 0}
+                  onChange={(e) => mutate((draft) => { draft.learning.ceoLearning.boardCommunicationHours = Number(e.target.value); })}
+                />
+              </label>
+              <label className="text-xs">Capital allocation review
+                <input
+                  className="input mt-1"
+                  type="number"
+                  value={ceoLearning.capitalAllocationReviewHours || 0}
+                  onChange={(e) => mutate((draft) => { draft.learning.ceoLearning.capitalAllocationReviewHours = Number(e.target.value); })}
+                />
+              </label>
+              <label className="text-xs">AI systems hours
+                <input
+                  className="input mt-1"
+                  type="number"
+                  value={ceoLearning.aiSystemsHours || 0}
+                  onChange={(e) => mutate((draft) => { draft.learning.ceoLearning.aiSystemsHours = Number(e.target.value); })}
+                />
+              </label>
+              <label className="text-xs">Learning-to-action lag (days)
+                <input
+                  className="input mt-1"
+                  type="number"
+                  value={ceoLearning.implementationLagDays || 0}
+                  onChange={(e) => mutate((draft) => { draft.learning.ceoLearning.implementationLagDays = Number(e.target.value); })}
+                />
+              </label>
+            </div>
+          </section>
+
+          <section className="rounded-xl border border-slate-200 dark:border-slate-700 p-3 space-y-2">
+            <h4 className="font-semibold text-sm">CEO Learning Focus</h4>
+            <label className="text-xs">Quarter theme
+              <input
+                className="input mt-1"
+                value={ceoLearning.quarterTheme || ''}
+                onChange={(e) => mutate((draft) => { draft.learning.ceoLearning.quarterTheme = e.target.value; })}
+              />
+            </label>
+            <label className="text-xs">Reflection and next upgrades
+              <textarea
+                className="textarea mt-1 min-h-28"
+                value={ceoLearning.reflection || ''}
+                onChange={(e) => mutate((draft) => { draft.learning.ceoLearning.reflection = e.target.value; })}
+              />
+            </label>
+            <div className="text-xs text-slate-500">
+              Recommended cadence: 2 operator calls/week, 1 capital allocation review, 1 strategic memo, 1 team coaching loop.
+            </div>
+          </section>
+        </div>
+
+        <div className="mt-3 rounded-xl border border-slate-200 dark:border-slate-700 p-3">
+          <h4 className="font-semibold text-sm mb-2">CEO Learning Modules</h4>
+          <div className="space-y-2">
+            {state.learning.ceoLearningModules.map((module) => (
+              <div key={module.id} className="rounded-lg border border-slate-200 dark:border-slate-700 p-2">
+                <div className="grid gap-2 md:grid-cols-12 items-center">
+                  <input
+                    className="input md:col-span-4"
+                    value={module.name}
+                    onChange={(e) => mutate((draft) => {
+                      const target = draft.learning.ceoLearningModules.find((x) => x.id === module.id);
+                      if (target) target.name = e.target.value;
+                    })}
+                  />
+                  <input
+                    className="input md:col-span-2"
+                    type="number"
+                    min="0"
+                    max="100"
+                    value={module.progress}
+                    onChange={(e) => mutate((draft) => {
+                      const target = draft.learning.ceoLearningModules.find((x) => x.id === module.id);
+                      if (target) target.progress = Number(e.target.value);
+                    })}
+                  />
+                  <div className="md:col-span-6">
+                    <Progress value={module.progress} />
+                  </div>
+                </div>
+                <textarea
+                  className="textarea mt-2"
+                  placeholder="Module notes"
+                  value={module.notes}
+                  onChange={(e) => mutate((draft) => {
+                    const target = draft.learning.ceoLearningModules.find((x) => x.id === module.id);
+                    if (target) target.notes = e.target.value;
+                  })}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      </Card>
+
+      <Card title="Mental Models for CEOs (First Principles + More)" subtitle="Core decision models you asked to bring back">
+        <div className="grid gap-2 md:grid-cols-2 xl:grid-cols-3">
+          {coreModels.map((model) => (
+            <div key={model.id} className="rounded-xl border border-slate-200 dark:border-slate-700 p-3 space-y-2">
+              <p className="font-semibold text-sm">{model.name}</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">{model.definition}</p>
+              <label className="text-xs">Mastery ({model.mastery}/10)
+                <input
+                  type="range"
+                  min="1"
+                  max="10"
+                  value={model.mastery}
+                  onChange={(e) => mutate((draft) => {
+                    const target = draft.knowledge.mentalModels.find((m) => m.id === model.id);
+                    if (target) target.mastery = Number(e.target.value);
+                  })}
+                  className="w-full"
+                />
+              </label>
+              <div className="flex items-center justify-between text-xs">
+                <span>Usage count: {model.usageCount}</span>
+                <button
+                  className="btn-secondary"
+                  onClick={() => mutate((draft) => {
+                    const target = draft.knowledge.mentalModels.find((m) => m.id === model.id);
+                    if (target) target.usageCount += 1;
+                  })}
+                >
+                  Apply Model
+                </button>
+              </div>
+              <textarea
+                className="textarea"
+                placeholder="Where you applied this model"
+                value={model.personalNotes}
+                onChange={(e) => mutate((draft) => {
+                  const target = draft.knowledge.mentalModels.find((m) => m.id === model.id);
+                  if (target) target.personalNotes = e.target.value;
+                })}
+              />
+            </div>
+          ))}
         </div>
       </Card>
 

@@ -147,56 +147,128 @@ const AGENTS = [
     name: 'Interview Analyzer Agent',
     icon: '🎙️',
     description: 'Extracts pains, willingness-to-pay, feature demands, and validation signals from interviews.',
-    outputTemplate: 'Pain points (ranked)\nWTP indicators\nFeature priorities\nRed flags\nSuggested follow-up questions'
+    outputTemplate: 'Pain points (ranked)\nWTP indicators\nFeature priorities\nRed flags\nSuggested follow-up questions',
+    requiredInputs: ['Interview transcript', 'ICP context', 'Current hypothesis'],
+    capabilities: [
+      'Detect pain points and intensity by customer segment',
+      'Extract willingness-to-pay language and pricing clues',
+      'Cluster feature requests into must-have vs nice-to-have',
+      'Flag contradictions, red flags, and weak demand signals',
+      'Generate follow-up questions for the next call batch'
+    ],
+    deliverables: ['Interview summary', 'Pattern report', 'Validation scorecard']
   },
   {
     id: 'competitive-intel',
     name: 'Competitive Intelligence Agent',
     icon: '🕵️',
     description: 'Builds competitor matrix with pricing, positioning, and strategic opportunities.',
-    outputTemplate: 'Competitor matrix\nStrengths/weaknesses\nPositioning wedges\nRecommended strategy'
+    outputTemplate: 'Competitor matrix\nStrengths/weaknesses\nPositioning wedges\nRecommended strategy',
+    requiredInputs: ['Competitor names/URLs', 'Your ICP', 'Your current position'],
+    capabilities: [
+      'Summarize product, pricing, and packaging differences',
+      'Map GTM motions and channel strategy',
+      'Compare strengths/weaknesses and moat quality',
+      'Generate positioning wedges based on differentiation',
+      'Output strategic response options'
+    ],
+    deliverables: ['Competitive matrix', 'Positioning recommendations', 'Threat/opportunity list']
   },
   {
     id: 'content-agent',
     name: 'Content Creation Agent',
     icon: '✍️',
     description: 'Generates content calendars and repurposed assets for multiple channels.',
-    outputTemplate: '30-day calendar\nLinkedIn draft\nEmail draft\nThread draft\nRepurposing map'
+    outputTemplate: '30-day calendar\nLinkedIn draft\nEmail draft\nThread draft\nRepurposing map',
+    requiredInputs: ['Topic', 'Audience', 'Goal', 'Brand voice'],
+    capabilities: [
+      'Generate 30-day content calendar',
+      'Draft long-form and short-form content variants',
+      'Repurpose one idea into multiple distribution formats',
+      'Add CTA and conversion intent by channel',
+      'Suggest SEO and hook improvements'
+    ],
+    deliverables: ['Calendar', 'Draft assets', 'Repurposing matrix']
   },
   {
     id: 'fundraising-agent',
     name: 'Fundraising Prep Agent',
     icon: '💼',
     description: 'Prepares investor lists, pitch critiques, and tough Q&A.',
-    outputTemplate: 'Top target VCs\nPitch weaknesses\nDue diligence prep\nQ&A bank'
+    outputTemplate: 'Top target VCs\nPitch weaknesses\nDue diligence prep\nQ&A bank',
+    requiredInputs: ['Deck narrative', 'Traction metrics', 'Raise target'],
+    capabilities: [
+      'Build target VC shortlist by thesis fit',
+      'Review deck flow and highlight weak slides',
+      'Generate difficult investor questions and best answers',
+      'Outline data room gaps and due diligence risks',
+      'Simulate skeptical partner feedback'
+    ],
+    deliverables: ['Target investor list', 'Deck feedback report', 'Q&A pack']
   },
   {
     id: 'product-agent',
     name: 'Product Development Agent',
     icon: '🧩',
     description: 'Converts ideas into PRDs, stories, architecture, and prioritization.',
-    outputTemplate: 'PRD\nUser stories\nTech design\nRICE priorities\nTest script'
+    outputTemplate: 'PRD\nUser stories\nTech design\nRICE priorities\nTest script',
+    requiredInputs: ['Problem statement', 'Target user', 'Constraints'],
+    capabilities: [
+      'Generate PRD from idea and user need',
+      'Produce user stories and acceptance criteria',
+      'Draft architecture and risk assumptions',
+      'Prioritize features with RICE style scoring',
+      'Create testing script and validation loop'
+    ],
+    deliverables: ['PRD package', 'Prioritized backlog', 'User test plan']
   },
   {
     id: 'hiring-agent',
     name: 'Hiring Assistant Agent',
     icon: '🧑‍💼',
     description: 'Builds job specs, interview scorecards, and onboarding plans.',
-    outputTemplate: 'JD\nQuestion bank\nScorecard\n90-day onboarding plan'
+    outputTemplate: 'JD\nQuestion bank\nScorecard\n90-day onboarding plan',
+    requiredInputs: ['Role objective', 'Team stage', 'Budget band'],
+    capabilities: [
+      'Generate role-specific job descriptions',
+      'Create structured interview question banks',
+      'Build scorecards with weighted signals',
+      'Produce 30/60/90 day onboarding plan',
+      'Highlight compensation and risk tradeoffs'
+    ],
+    deliverables: ['Job description', 'Interview kit', 'Onboarding plan']
   },
   {
     id: 'growth-agent',
     name: 'Growth Experiment Agent',
     icon: '📈',
     description: 'Designs experiments and recommends next actions from outcomes.',
-    outputTemplate: '20 experiments\nPrioritization\nMeasurement plan\nNext bets'
+    outputTemplate: '20 experiments\nPrioritization\nMeasurement plan\nNext bets',
+    requiredInputs: ['Current funnel data', 'North-star metric', 'Channel constraints'],
+    capabilities: [
+      'Generate experiment backlog with hypotheses',
+      'Score tests by impact and effort',
+      'Define success metrics and guardrails',
+      'Analyze outcomes and confidence level',
+      'Recommend next iteration based on signal quality'
+    ],
+    deliverables: ['Experiment backlog', 'Measurement plan', 'Next-test recommendation']
   },
   {
     id: 'strategy-agent',
     name: 'Strategic Planning Agent',
     icon: '♟️',
     description: 'Generates options, scenarios, and strategic plans with tradeoffs.',
-    outputTemplate: 'Scenario plan\nSWOT\nStrategic options\nOKRs'
+    outputTemplate: 'Scenario plan\nSWOT\nStrategic options\nOKRs',
+    requiredInputs: ['Company stage', 'Constraints', 'Planning horizon'],
+    capabilities: [
+      'Generate base/upside/downside scenarios',
+      'Create strategic options with tradeoffs',
+      'Build SWOT and risk map',
+      'Translate strategy into OKRs',
+      'Recommend reversible vs irreversible decisions'
+    ],
+    deliverables: ['Scenario memo', 'Strategic options sheet', 'OKR draft']
   }
 ];
 
@@ -425,7 +497,25 @@ export function createDefaultState() {
         expertConnections: 6,
         contentPublished: 9,
         practiceProjects: 4
-      }
+      },
+      ceoLearning: {
+        strategicThinkingHours: 4,
+        operatorConversations: 2,
+        boardCommunicationHours: 1,
+        capitalAllocationReviewHours: 1,
+        aiSystemsHours: 2,
+        implementationLagDays: 5,
+        quarterTheme: 'From PMF signal to repeatable growth',
+        reflection: 'Focus this week: tighter decision memos and faster feedback loops.'
+      },
+      ceoLearningModules: [
+        { id: uid('ceo_module'), name: 'First Principles Thinking', progress: 55, notes: 'Apply in pricing and onboarding decisions.' },
+        { id: uid('ceo_module'), name: 'Capital Allocation', progress: 40, notes: 'Weekly review of burn and ROI by initiative.' },
+        { id: uid('ceo_module'), name: 'Founder-led Sales Mastery', progress: 62, notes: 'Improve discovery quality and closing rate.' },
+        { id: uid('ceo_module'), name: 'Hiring and Team Design', progress: 35, notes: 'Clarify scorecards before next hire.' },
+        { id: uid('ceo_module'), name: 'Strategic Communication', progress: 48, notes: 'Improve investor narrative consistency.' },
+        { id: uid('ceo_module'), name: 'AI Leverage for Execution', progress: 58, notes: 'Automate recurring analysis workflows.' }
+      ]
     },
     decisions: {
       items: [
@@ -558,23 +648,56 @@ export function createDefaultState() {
 
 export function ensureStateShape(incoming) {
   if (!incoming || typeof incoming !== 'object') return createDefaultState();
+  const defaults = createDefaultState();
+  const agentDefaults = Object.fromEntries(defaults.ai.agents.map((agent) => [agent.id, agent]));
+
+  const incomingAgents = Array.isArray(incoming.ai?.agents) && incoming.ai.agents.length
+    ? incoming.ai.agents
+    : defaults.ai.agents;
+
   return {
-    ...createDefaultState(),
+    ...defaults,
     ...incoming,
-    profile: { ...createDefaultState().profile, ...(incoming.profile || {}) },
-    settings: { ...createDefaultState().settings, ...(incoming.settings || {}) },
-    dashboard: { ...createDefaultState().dashboard, ...(incoming.dashboard || {}) },
-    roadmap: { ...createDefaultState().roadmap, ...(incoming.roadmap || {}) },
-    metrics: { ...createDefaultState().metrics, ...(incoming.metrics || {}) },
-    knowledge: { ...createDefaultState().knowledge, ...(incoming.knowledge || {}) },
-    learning: { ...createDefaultState().learning, ...(incoming.learning || {}) },
-    decisions: { ...createDefaultState().decisions, ...(incoming.decisions || {}) },
-    ai: { ...createDefaultState().ai, ...(incoming.ai || {}) },
-    productivity: { ...createDefaultState().productivity, ...(incoming.productivity || {}) },
-    network: { ...createDefaultState().network, ...(incoming.network || {}) },
-    fundraising: { ...createDefaultState().fundraising, ...(incoming.fundraising || {}) },
-    financialModel: { ...createDefaultState().financialModel, ...(incoming.financialModel || {}) },
-    reports: { ...createDefaultState().reports, ...(incoming.reports || {}) },
-    ui: { ...createDefaultState().ui, ...(incoming.ui || {}) }
+    profile: { ...defaults.profile, ...(incoming.profile || {}) },
+    settings: { ...defaults.settings, ...(incoming.settings || {}) },
+    dashboard: { ...defaults.dashboard, ...(incoming.dashboard || {}) },
+    roadmap: { ...defaults.roadmap, ...(incoming.roadmap || {}) },
+    metrics: { ...defaults.metrics, ...(incoming.metrics || {}) },
+    knowledge: { ...defaults.knowledge, ...(incoming.knowledge || {}) },
+    learning: {
+      ...defaults.learning,
+      ...(incoming.learning || {}),
+      ceoLearning: { ...defaults.learning.ceoLearning, ...(incoming.learning?.ceoLearning || {}) },
+      ceoLearningModules: Array.isArray(incoming.learning?.ceoLearningModules) && incoming.learning.ceoLearningModules.length
+        ? incoming.learning.ceoLearningModules
+        : defaults.learning.ceoLearningModules
+    },
+    decisions: { ...defaults.decisions, ...(incoming.decisions || {}) },
+    ai: {
+      ...defaults.ai,
+      ...(incoming.ai || {}),
+      agents: incomingAgents.map((agent) => {
+        const fallback = agentDefaults[agent.id] || {};
+        return {
+          ...fallback,
+          ...agent,
+          requiredInputs: Array.isArray(agent.requiredInputs) && agent.requiredInputs.length
+            ? agent.requiredInputs
+            : (fallback.requiredInputs || []),
+          capabilities: Array.isArray(agent.capabilities) && agent.capabilities.length
+            ? agent.capabilities
+            : (fallback.capabilities || []),
+          deliverables: Array.isArray(agent.deliverables) && agent.deliverables.length
+            ? agent.deliverables
+            : (fallback.deliverables || [])
+        };
+      })
+    },
+    productivity: { ...defaults.productivity, ...(incoming.productivity || {}) },
+    network: { ...defaults.network, ...(incoming.network || {}) },
+    fundraising: { ...defaults.fundraising, ...(incoming.fundraising || {}) },
+    financialModel: { ...defaults.financialModel, ...(incoming.financialModel || {}) },
+    reports: { ...defaults.reports, ...(incoming.reports || {}) },
+    ui: { ...defaults.ui, ...(incoming.ui || {}) }
   };
 }

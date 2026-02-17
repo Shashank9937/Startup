@@ -1,7 +1,30 @@
 import React from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 
-export function Card({ title, subtitle, action, children, className = '' }) {
+export function Card({
+  title,
+  subtitle,
+  action,
+  children,
+  className = '',
+  showSectionActions = true,
+  onEdit,
+  onUpdate
+}) {
+  const [isEditing, setIsEditing] = React.useState(false);
+  const [updatedLabel, setUpdatedLabel] = React.useState('');
+
+  const handleEdit = () => {
+    const next = !isEditing;
+    setIsEditing(next);
+    if (onEdit) onEdit(next);
+  };
+
+  const handleUpdate = () => {
+    setUpdatedLabel(`Updated ${new Date().toLocaleTimeString()}`);
+    if (onUpdate) onUpdate();
+  };
+
   return (
     <motion.section
       layout
@@ -15,8 +38,32 @@ export function Card({ title, subtitle, action, children, className = '' }) {
           <div>
             {title ? <h3 className="font-heading text-lg font-semibold text-slate-900 dark:text-slate-100">{title}</h3> : null}
             {subtitle ? <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">{subtitle}</p> : null}
+            {updatedLabel ? <p className="text-[11px] text-emerald-600 dark:text-emerald-400 mt-1">{updatedLabel}</p> : null}
           </div>
-          {action}
+          <div className="flex items-center gap-2">
+            {action}
+            {showSectionActions ? (
+              <>
+                <button
+                  type="button"
+                  className={`rounded-md border px-2 py-1 text-xs ${isEditing
+                    ? 'border-primary-500 text-primary-700 dark:text-primary-300'
+                    : 'border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-300'
+                  }`}
+                  onClick={handleEdit}
+                >
+                  {isEditing ? 'Editing' : 'Edit'}
+                </button>
+                <button
+                  type="button"
+                  className="rounded-md border border-slate-300 dark:border-slate-700 px-2 py-1 text-xs text-slate-600 dark:text-slate-300"
+                  onClick={handleUpdate}
+                >
+                  Update
+                </button>
+              </>
+            ) : null}
+          </div>
         </header>
       ) : null}
       {children}
